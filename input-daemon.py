@@ -1,3 +1,5 @@
 import subprocess
-subprocess.Popen(["sudo","python3","input.py"])
-
+proc = subprocess.Popen(["sudo","python3","keybinds.py"])
+take = input();
+if input=="end":
+    proc.terminate()
