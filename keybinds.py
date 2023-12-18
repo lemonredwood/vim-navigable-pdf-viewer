@@ -2,7 +2,17 @@ import keyboard
 
 def on_key_event(e):
     if e.event_type == keyboard.KEY_DOWN:
-        print(f'\nKey {e.name} was pressed')
+        if e.name == 'h':
+            print(f'\nKey {e.name} was pressed')
+
+        if e.name == 'j':
+            print(f'\nKey {e.name} was pressed')
+
+        if e.name == 'k':
+            print(f'\nKey {e.name} was pressed')
+        
+        if e.name == 'l':
+            print(f'\nKey {e.name} was pressed')
 
 keyboard.hook(on_key_event)
 
