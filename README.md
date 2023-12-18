@@ -12,16 +12,16 @@ Features
 
 ## How to Use
 
-    ###Move Around:
+    Move Around:
         Up: k or ↑
         Down: j or ↓
         Page Up: h or ->
         Page Down: l or <-
         Top: gg
         Bottom: G
-    ###Search:
+    Search:
         Start Search: /
         Next Match: n
         Previous Match: N
-    ###Quit:
+    Quit:
         Exit Viewer: :q
