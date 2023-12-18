@@ -1,45 +1,52 @@
-import tkinter as tk
-from tkinter import ttk
 import fitz  # PyMuPDF
+from PIL import Image, ImageTk
+import tkinter as tk
 
-class PDFViewerApp:
-    def __init__(self, root, pdf_path):
-        self.root = root
-        self.root.title("PDF Viewer")
+class PDFViewer:
+    def __init__(self, master, pdf_path):
+        self.master = master
+        self.master.title("PDF Viewer")
 
-        # Create a Tkinter Text widget to display PDF content
-        self.text_widget = tk.Text(root, wrap=tk.WORD, width=80, height=40)
-        self.text_widget.pack(expand=tk.YES, fill=tk.BOTH)
+        self.doc = fitz.open(pdf_path)
+        self.current_page = 0
 
-        # Create a vertical scrollbar for the Text widget
-        self.scrollbar = ttk.Scrollbar(root, orient=tk.VERTICAL, command=self.text_widget.yview)
-        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        self.text_widget.configure(yscrollcommand=self.scrollbar.set)
+        self.label = tk.Label(self.master)
+        self.label.pack()
 
-        # Open the PDF file
-        self.pdf_document = fitz.open(pdf_path)
+        self.prev_button = tk.Button(self.master, text="Previous", command=self.show_prev_page)
+        self.prev_button.pack(side=tk.LEFT)
 
-        # Display the first page
-        self.display_page(0)
+        self.next_button = tk.Button(self.master, text="Next", command=self.show_next_page)
+        self.next_button.pack(side=tk.RIGHT)
 
-    def display_page(self, page_number):
-        # Get the page
-        page = self.pdf_document[page_number]
+        self.show_page()
 
-        # Extract text from the page
-        text = page.get_text()
+    def show_page(self):
+        page = self.doc[self.current_page]
+        pix = page.get_pixmap()
+        img = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
+        img_tk = ImageTk.PhotoImage(img)
 
-        # Clear the Text widget and insert the new text
-        self.text_widget.delete('1.0', tk.END)
-        self.text_widget.insert(tk.END, text)
+        self.label.config(image=img_tk)
+        self.label.image = img_tk
+
+    def show_prev_page(self):
+        if self.current_page > 0:
+            self.current_page -= 1
+            self.show_page()
+
+    def show_next_page(self):
+        if self.current_page < self.doc.page_count - 1:
+            self.current_page += 1
+            self.show_page()
 
     def run(self):
-        self.root.mainloop()
+        self.master.mainloop()
+        self.doc.close()
 
 if __name__ == "__main__":
-    pdf_path = "sample.pdf"  # Replace with the path to your PDF file
-
+    pdf_path = "sample.pdf"
     root = tk.Tk()
-    app = PDFViewerApp(root, pdf_path)
-    app.run()
+    viewer = PDFViewer(root, pdf_path)
+    viewer.run()
 
