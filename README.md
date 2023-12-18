@@ -1,6 +1,6 @@
-#Vim PDF Viewer
+# Vim PDF Viewer
 
-##Overview
+## Overview
 
 Welcome to the Vim PDF Viewer! This tool lets you view PDFs using your favorite Vim keyboard shortcuts. If you love Vim and want a simple way to read PDFs, this is for you.
 Features
@@ -10,13 +10,13 @@ Features
     Search Function: Quickly find what you're looking for in the PDF.
     Easy Customization: Adjust the viewer to fit your preferences.
 
-##How to Use
+## How to Use
 
     ###Move Around:
         Up: k or ↑
         Down: j or ↓
-        Page Up: Ctrl + b
-        Page Down: Ctrl + f
+        Page Up: h or ->
+        Page Down: l or <-
         Top: gg
         Bottom: G
     ###Search:
