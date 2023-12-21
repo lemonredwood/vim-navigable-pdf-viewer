@@ -1,3 +1,4 @@
+import time
 import fitz  # PyMuPDF
 from PIL import Image, ImageTk
 import tkinter as tk
@@ -51,9 +52,21 @@ class PDFViewer:
         self.master.mainloop()
         self.doc.close()
 
+    def scroll_down(self):
+        # Programmatically scroll down the canvas
+        self.canvas.yview_scroll(1, "units")
+
+    def perform_scrolling(self):
+        # Schedule scrolling after a delay
+        self.scroll_down()
+        self.master.after(1000, self.scroll_down)  # 1000 milliseconds (1 second) delay
+        self.master.after(2000, self.scroll_down)  # 2000 milliseconds (2 seconds) delay
+        self.master.after(3000, self.scroll_down)  # 3000 milliseconds (3 seconds) delay
+
 if __name__ == "__main__":
     pdf_path = "sample.pdf"
     root = tk.Tk()
     viewer = PDFViewer(root, pdf_path)
+    viewer.perform_scrolling()
     viewer.run()
 
