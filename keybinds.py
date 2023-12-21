@@ -1,4 +1,5 @@
 import keyboard
+from viewer import viewer
 
 def on_key_event(e):
     if e.event_type == keyboard.KEY_DOWN:
@@ -6,6 +7,7 @@ def on_key_event(e):
             print(f'\nKey {e.name} was pressed')
 
         if e.name == 'j':
+            viewer.scroll_down()
             print(f'\nKey {e.name} was pressed')
 
         if e.name == 'k':

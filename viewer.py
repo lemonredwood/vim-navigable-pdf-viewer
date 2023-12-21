@@ -1,10 +1,8 @@
 import tkinter as tk
 import fitz  # PyMuPDF
 from PIL import Image, ImageTk
-import subprocess
-proc = subprocess.Popen(["sudo","python3","keybinds.py"])
-take = input();
-
+import threading
+from pynput import keyboard
 
 class PDFViewer:
     def __init__(self, master, pdf_path):
@@ -70,18 +68,26 @@ class PDFViewer:
         # Programmatically scroll down the canvas
         self.canvas.yview_scroll(1, "units")
 
-    def perform_scrolling(self):
-        # Schedule scrolling after a delay
-        self.scroll_down()
-        for i in range(10):
-            self.master.after(1000, self.scroll_down)  
-            self.master.after(2000, self.scroll_down)  
-            self.master.after(3000, self.scroll_down)  
+    def on_key_event(self, key):
+        try:
+            char = key.char
+            if char == 'j':
+                self.scroll_down()
+                print(f'\nKey {char} was pressed')
+        except AttributeError:
+            pass
 
-# Example usage:
+def key_event_listener(viewer):
+    with keyboard.Listener(on_press=viewer.on_key_event) as listener:
+        listener.join()
+
 if __name__ == "__main__":
     root = tk.Tk()
     viewer = PDFViewer(root, "sample.pdf")
-    viewer.perform_scrolling()
+
+    # Create a thread for keyboard input detection
+    key_listener_thread = threading.Thread(target=key_event_listener, args=(viewer,))
+    key_listener_thread.start()
+
     viewer.run()
 
