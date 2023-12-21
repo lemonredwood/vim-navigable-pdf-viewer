@@ -59,9 +59,9 @@ class PDFViewer:
     def perform_scrolling(self):
         # Schedule scrolling after a delay
         self.scroll_down()
-        self.master.after(1000, self.scroll_down)  # 1000 milliseconds (1 second) delay
-        self.master.after(2000, self.scroll_down)  # 2000 milliseconds (2 seconds) delay
-        self.master.after(3000, self.scroll_down)  # 3000 milliseconds (3 seconds) delay
+        self.master.after(1000, self.scroll_down)  
+        self.master.after(2000, self.scroll_down)  
+        self.master.after(3000, self.scroll_down)  
 
 if __name__ == "__main__":
     pdf_path = "sample.pdf"
