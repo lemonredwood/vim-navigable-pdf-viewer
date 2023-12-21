@@ -1,7 +1,10 @@
-import time
+import tkinter as tk
 import fitz  # PyMuPDF
 from PIL import Image, ImageTk
-import tkinter as tk
+import subprocess
+proc = subprocess.Popen(["sudo","python3","keybinds.py"])
+take = input();
+
 
 class PDFViewer:
     def __init__(self, master, pdf_path):
@@ -10,6 +13,7 @@ class PDFViewer:
 
         self.doc = fitz.open(pdf_path)
         self.current_page = 0
+        self.pages_to_display = 2  # Number of pages to display vertically
 
         self.canvas = tk.Canvas(self.master)
         self.canvas.pack(fill=tk.BOTH, expand=True)
@@ -25,17 +29,27 @@ class PDFViewer:
         self.next_button = tk.Button(self.master, text="Next", command=self.show_next_page)
         self.next_button.pack(side=tk.RIGHT)
 
-        self.img_tk = None  # Initialize img_tk as an instance variable
+        self.img_tk_list = [None] * self.pages_to_display  # List to store ImageTk instances
         self.show_page()
 
     def show_page(self):
-        page = self.doc[self.current_page]
-        pix = page.get_pixmap()
-        img = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
-        self.img_tk = ImageTk.PhotoImage(img)
+        for i in range(self.pages_to_display):
+            page_index = self.current_page + i
+            if page_index < self.doc.page_count:
+                page = self.doc[page_index]
+                pix = page.get_pixmap()
+                img = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
+                self.img_tk_list[i] = ImageTk.PhotoImage(img)
+            else:
+                self.img_tk_list[i] = None
 
         self.canvas.delete("all")  # Clear previous content
-        self.canvas.create_image(0, 0, anchor=tk.NW, image=self.img_tk)
+        y_offset = 0
+        for img_tk in self.img_tk_list:
+            if img_tk:
+                self.canvas.create_image(0, y_offset, anchor=tk.NW, image=img_tk)
+                y_offset += img_tk.height()
+
         self.canvas.config(scrollregion=self.canvas.bbox(tk.ALL))
 
     def show_prev_page(self):
@@ -59,14 +73,15 @@ class PDFViewer:
     def perform_scrolling(self):
         # Schedule scrolling after a delay
         self.scroll_down()
-        self.master.after(1000, self.scroll_down)  
-        self.master.after(2000, self.scroll_down)  
-        self.master.after(3000, self.scroll_down)  
+        for i in range(10):
+            self.master.after(1000, self.scroll_down)  
+            self.master.after(2000, self.scroll_down)  
+            self.master.after(3000, self.scroll_down)  
 
+# Example usage:
 if __name__ == "__main__":
-    pdf_path = "sample.pdf"
     root = tk.Tk()
-    viewer = PDFViewer(root, pdf_path)
+    viewer = PDFViewer(root, "sample.pdf")
     viewer.perform_scrolling()
     viewer.run()
 
