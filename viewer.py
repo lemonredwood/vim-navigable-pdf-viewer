@@ -10,8 +10,13 @@ class PDFViewer:
         self.doc = fitz.open(pdf_path)
         self.current_page = 0
 
-        self.label = tk.Label(self.master)
-        self.label.pack()
+        self.canvas = tk.Canvas(self.master)
+        self.canvas.pack(fill=tk.BOTH, expand=True)
+
+        self.scrollbar = tk.Scrollbar(self.master, command=self.canvas.yview)
+        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        self.canvas.config(yscrollcommand=self.scrollbar.set)
 
         self.prev_button = tk.Button(self.master, text="Previous", command=self.show_prev_page)
         self.prev_button.pack(side=tk.LEFT)
@@ -19,16 +24,18 @@ class PDFViewer:
         self.next_button = tk.Button(self.master, text="Next", command=self.show_next_page)
         self.next_button.pack(side=tk.RIGHT)
 
+        self.img_tk = None  # Initialize img_tk as an instance variable
         self.show_page()
 
     def show_page(self):
         page = self.doc[self.current_page]
         pix = page.get_pixmap()
         img = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
-        img_tk = ImageTk.PhotoImage(img)
+        self.img_tk = ImageTk.PhotoImage(img)
 
-        self.label.config(image=img_tk)
-        self.label.image = img_tk
+        self.canvas.delete("all")  # Clear previous content
+        self.canvas.create_image(0, 0, anchor=tk.NW, image=self.img_tk)
+        self.canvas.config(scrollregion=self.canvas.bbox(tk.ALL))
 
     def show_prev_page(self):
         if self.current_page > 0:
