@@ -96,7 +96,6 @@ class PDFViewer:
             char = key.char
             if char == 'j':
                 self.scroll_down()
-                print(f'\nKey {char} was pressed')
             elif char == 'k':
                 self.scroll_up()
         except AttributeError:
